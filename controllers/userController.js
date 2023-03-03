@@ -80,7 +80,7 @@ module.exports.signup = asyncHandler(async (req, res) => {
 //@access Public
 const sendVerificationEmail = ({ _id, email }, res) => {
     // url to be used in the eamil
-    const currentUrl = "http://localhost:4000/"
+    const currentUrl = "https://foodquarter.onrender.com/"
 
     const OTP = uuidv4() + _id
 
