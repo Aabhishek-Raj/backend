@@ -18,7 +18,7 @@ const socketIO = require('socket.io');
 
 connectDB() 
 
-app.use(logger) 
+// app.use(logger) 
 
 app.use(cors(corsOptions)) 
 
