@@ -1,7 +1,7 @@
 require('dotenv').config()
 const AWS = require('aws-sdk')
-const fs = require('node:fs')
-const util = require('node:util')
+const fs = require('fs')
+const util = require('util')
 const unlinkFile = util.promisify(fs.unlink)
 
 const bucketName = process.env.AWS_BUCKET_NAME

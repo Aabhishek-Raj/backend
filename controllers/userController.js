@@ -5,9 +5,9 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const { v4: uuidv4 } = require('uuid')
-const path = require('node:path')
+const path = require('path')
 const Pwdreset = require('../models/pwdresetSchema')
-const { accessSync } = require('node:fs')
+const { accessSync } = require('fs')
 const Supplier = require('../models/supplierSchema')
 
 //@desc Send a mail
