@@ -250,12 +250,12 @@ module.exports.getNumbers = asyncHandler(async (req, res) => {
     const countData = {
         userCount,
         supplierCount,
-        orderCount,  
+        orderCount,
         foodCount
     }
 
-    if(!countData) {
-        return res.status(400).json({message: 'App doesnot have anu data'})
+    if (!countData) {
+        return res.status(400).json({ message: 'App doesnot have anu data' })
     }
 
     res.status(200).json(countData)
@@ -265,15 +265,45 @@ module.exports.getNumbers = asyncHandler(async (req, res) => {
 //@route GET   /salesreport
 //@access Private
 module.exports.getSalesReport = asyncHandler(async (req, res) => {
-    console.log('hai va')
-    
-    const sales = await Order.find({}).populate('user').populate('supplierId')
+    console.log('varaakndo')
 
-    if(!sales) {
-        return res.status(400).json({message: 'There is no sales'})
-    }
+    const tablefrom = await Order.aggregate([ 
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'user',
+                foreignField: '_id',
+                as: 'user'
+            }
+        },
+        {
+            $lookup: {
+                from: 'suppliers',
+                localField: 'supplierId',
+                foreignField: '_id',
+                as: 'supplier'
+            }
+        },
+        {
+            $project: {
+                user: { $arrayElemAt: ['$user.username', 0] },
+                userEmail: {$arrayElemAt: ['$user.email', 0]},
+                supplier: { $arrayElemAt: ['$supplier.name', 0] },
+                supplierEmail: {$arrayElemAt: ['$supplier.email', 0]},
+                total: 1,
+                quantity: 1,
+                createdAt: {
+                    $dateToString: {
+                        format: '%m/%d/%Y %H:%M:%S',
+                        date: '$createdAt',
+                        timezone: 'UTC'
+                    }
+                }
+            }
+        }
+    ])
 
-    res.status(200).json(sales)
+    res.status(200).json(tablefrom)
 })
-      
+
 

@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const path = require('path')
-const { logger, logEvents } = require('./middleware/logger')
+const { logEvents } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
 const cookieParse = require('cookie-parser')
 const cors = require('cors')
@@ -17,8 +17,6 @@ const socketIO = require('socket.io');
 
 
 connectDB() 
-
-// app.use(logger) 
 
 app.use(cors(corsOptions)) 
 
@@ -47,8 +45,7 @@ app.all('*', (req, res) => {
     }else{
         res.type('txt').send('404 Not found')
     }
-})
-
+})  
 
 app.use(errorHandler)
 

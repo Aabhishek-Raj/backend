@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const { v4: uuidv4 } = require('uuid')
-const path = require('path')
+const path = require('node:path')
 const Pwdreset = require('../models/pwdresetSchema')
 const { accessSync } = require('fs')
 const Supplier = require('../models/supplierSchema')
@@ -80,7 +80,7 @@ module.exports.signup = asyncHandler(async (req, res) => {
 //@access Public
 const sendVerificationEmail = ({ _id, email }, res) => {
     // url to be used in the eamil
-    const currentUrl = "https://foodquarter.onrender.com/"
+    const currentUrl = "https://foodquarter.onrender.com"
 
     const OTP = uuidv4() + _id
 

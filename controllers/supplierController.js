@@ -1,4 +1,5 @@
 const Supplier = require('../models/supplierSchema')
+const Order = require('../models/orderSchema')
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -26,7 +27,7 @@ module.exports.register = asyncHandler(async(req, res) => {
 
     //saving image in s3
     const result = await uploadFile(license)
-
+     
     if(!result?.Key){
         return res.status(400).json({message: "Select another image"})
     }
@@ -87,4 +88,49 @@ module.exports.login = asyncHandler( async (req, res) => {
 
     res.status(200).json({ supplier: foundSupplier, SupplierToken})
 
+})
+
+module.exports.getSalesReport = asyncHandler( async (req, res) => {
+
+    const mongoose = require('mongoose')
+    const ObjUserId = mongoose.Types.ObjectId(req.supplier.supplierId)
+
+    const order = await Order.aggregate([
+        {
+            $match: {
+                supplierId: ObjUserId
+            }
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'user',
+                foreignField: '_id',
+                as: 'user'
+            }
+        },
+        {
+            $project: {
+                user: { $arrayElemAt: ['$user.username', 0] },
+                userEmail: {$arrayElemAt: ['$user.email', 0]},
+                total: 1,
+                quantity: 1,
+                createdAt: {
+                    $dateToString: {
+                        format: '%m/%d/%Y %H:%M:%S',
+                        date: '$createdAt',
+                        timezone: 'UTC'
+                    }
+                }
+            }
+        }
+    ])
+    
+    if(!order){
+        return res.status(400).json({message: 'Sorry !! No sales for you'})
+    }
+    
+    console.log(order)
+    
+    res.status(200).json(order) 
 })

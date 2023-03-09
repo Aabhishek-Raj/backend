@@ -1,3 +1,5 @@
-const   allowedOrigins = 'https://foodquarter.netlify.app'
+const   allowedOrigins = [
+    'https://foodquarter.netlify.app'
+]
 
-module.exports = allowedOrigins
+module.exports = allowedOrigins   

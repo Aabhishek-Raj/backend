@@ -42,47 +42,6 @@ module.exports.getFoods = asyncHandler( async (req, res) => {
     res.status(200).json(foods)
 })
 
-// @desc Add items to package
-// @route POST /additem
-// @access Private
-module.exports.addItems = asyncHandler( async (req, res) => {
-    const { itemname, amount, calory} = req.body
-    const { id } = req.query
-    const foodpic = req.file
-
-    if(!itemname || !amount || !foodpic || !calory || !id){
-        return res.status(400).json({message: 'All fiels are Required'})
-    }
-
-    const package = await Package.findById(id)
-
-    if(!package){
-        return res.status(400).json({message: "First Create a package to add items"})
-    }
-
-    if(!req.supplier.supplierId){
-        return res.status(401).json({message: "You are not authorized to add Items"})
-    }
-
-    //To make sure the the package is owned by the supplier
-    if(package.supplierId.toString() !== req.supplier.supplierId){
-        return res.status(401).json({message: 'Not authorized to edit this package'})
-    }
-
-    const result = await uploadFile(foodpic)
-
-    if (!result?.Key) {
-        return res.status(400).json({message: "Upload another image"})
-    }
-
-    const items = {...req.body, foodpic: result.Key} 
-
-    const insertItem = await Package.findOneAndUpdate({_id: id}, {$push: {FoodItems: items}}, {new: true} )
-
-    res.status(200).json(insertItem)
-})
-
-
 // @desc Get each supplier food for user
 // @route GET /suppliersfood
 // @access Private
